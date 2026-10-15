@@ -7,7 +7,10 @@
 [![Docker](https://img.shields.io/badge/Containers-Docker%20Compose-2496ed.svg?logo=docker&logoColor=white)](https://www.docker.com/)
 [![Research Track](https://img.shields.io/badge/Seminario%20de%20T%C3%ADtulo%20II-Investigaci%C3%B3n%20Aplicada-orange.svg)]()
 
+**Repositorio Oficial:** [https://github.com/jalvarez-uv/tesis_soar](https://github.com/jalvarez-uv/tesis_soar)
+
 > **Trabajo de Titulación para optar al título de Ingeniero Civil Informático**  
+
 > **Autor:** Jorge Eduardo Álvarez Alarcón (`jorge.alvareza@estudiantes.uv.cl`)  
 > **Profesor Guía:** Cristian Carrión  
 > **Institución:** Escuela de Ingeniería Informática, Facultad de Ingeniería, Universidad de Valparaíso, Chile  
@@ -30,7 +33,7 @@ Los Centros de Operaciones de Seguridad (**SOC**) modernos enfrentan una crisis 
 * **Volumen desbordante y ruido operacional:** Los analistas se ven inundados por miles de alertas diarias (~10.000 alertas/día en organizaciones medianas y grandes), donde entre un 40% y 42% corresponden a falsos positivos o eventos de baja relevancia táctica.
 * **Silos de información y fragmentación:** La infraestructura de defensa opera de manera desconectada. Las herramientas SIEM (ej. Wazuh), los escáneres de vulnerabilidades estáticas (ej. OpenVAS / Greenbone), las plataformas de inteligencia de amenazas (CTI) y el inventario de activos no dialogan entre sí.
 * **Insuficiencia del estándar CVSS estático:** Tradicionalmente, la industria prioriza incidentes basándose exclusivamente en la severidad base intrínseca (*Common Vulnerability Scoring System - CVSS*). Sin embargo, una vulnerabilidad con CVSS 10.0 en un servidor de pruebas aislado sin exposición a internet no representa la misma urgencia organizacional que un CVSS 7.5 en una base de datos central que está recibiendo ataques de fuerza bruta o inyecciones SQL en tiempo real.
-* **Sobrecarga cognitiva y correlación manual:** Un analista invierte entre 9 y 15 minutos por alerta para correlacionar manualmente la IP afectada, consultar el inventario, verificar si existe un exploit activo en catálogos globales y revisar los logs del SIEM. Para un lote modesto de 50 incidentes, este triaje manual requiere entre 5 y 7.5 horas de trabajo humano ininterrumpido, lo que genera retrasos críticos en el *Mean Time to Respond* (MTTR) y propicia que vulnerabilidades críticas pasen desapercibidas.
+* **Sobrecarga cognitiva y correlación manual:** Un analista invierte entre 9 y 15 minutos por alerta para correlacionar manualmente la IP afectada, consultar el inventario, verificar si existe un exploit activo en catálogos globales y revisar los logs del SIEM. Para un lote modesto de 50 incidentes, este triaje manual requiere entre 5 y 7.5 horas de trabajo humano ininterrumpido, lo que impide una **reducción estimada del esfuerzo de correlación manual** y propicia que vulnerabilidades críticas pasen desapercibidas.
 
 ### 2.2. Solución Propuesta: Motor RBVM + Principios SOAR
 
@@ -44,9 +47,9 @@ Basado en las recomendaciones de **ISO/IEC 27005:2022** y adaptando los principi
 
 $$M_{din} = (E_o \times 0.45) + (C_a \times 0.35) + (I_t \times 0.20)$$
 
-El **Riesgo Final ($R_f$)** resultante se normaliza mediante la ecuación:
+El **Riesgo Final ($R_f$)** resultante se modela conceptualmente integrando la severidad técnica intrínseca y el multiplicador dinámico:
 
-$$R_f = \frac{\text{CVSS} \times M_{din}}{1.2}$$
+$$R_f = \text{CVSS} \times M_{din}$$
 
 Donde:
 * **$\text{CVSS} \in [0.0, 10.0]$:** Severidad técnica intrínseca proporcionada por OpenVAS.
@@ -63,7 +66,7 @@ Donde:
   * `0.5` (Teórica): Sin evidencia pública de explotación activa.
   * `0.8` (PoC): Existencia de prueba de concepto pública registrada en MISP.
   * `1.2` (Activa): Vulnerabilidad presente en el catálogo oficial de explotación **CISA KEV** (*Known Exploited Vulnerabilities*).
-* **Divisor $1.2$:** Representa el **límite máximo analítico** de la ecuación ($1.2 \times [0.45 + 0.35 + 0.20] = 1.2$). Garantiza matemáticamente que $R_f$ jamás sobrepase $10.0$ y confirma que el algoritmo actúa como un **atenuador determinístico de ruido operacional**, degradando la prioridad de hallazgos en activos no críticos o sin ataques detectados.
+
 
 ---
 
@@ -75,21 +78,21 @@ La solución adopta una **arquitectura modular desacoplada por capas**, orientad
 
 ```mermaid
 flowchart TD
-    subgraph CAPA_INGESTA["1. Capa de Ingesta y Sensores (Mocking Normalizado)"]
-        Wazuh["SIEM Wazuh<br/>(alertas_50_eventos.json)"]
-        OpenVAS["Escáner OpenVAS<br/>(openvas_real.json)"]
-        Inventario["Inventario de Activos<br/>(inventario.json)"]
+    subgraph CAPA_INGESTA["1. Capa de Ingesta y Sensores en Producción"]
+        Wazuh["SIEM Wazuh<br/>(API REST :55000)"]
+        OpenVAS["Escáner OpenVAS / GVM<br/>(API REST / GMP)"]
+        Inventario["Inventario de Activos<br/>(Matriz Organizacional)"]
     end
 
     subgraph CAPA_CTI["2. Capa de Inteligencia de Amenazas (CTI)"]
         CISA["CISA KEV Feed<br/>(API REST Oficial / JSON)"]
-        MISP["MISP Threat Intel<br/>(misp_poc_feed.json / Docker)"]
+        MISP["MISP Threat Intel<br/>(Feed CTI / Docker)"]
     end
 
     subgraph CAPA_LOGICA["3. Capa Lógica y Orquestación (Motor Python)"]
         Deduplicador["Deduplicador de Eventos<br/>(Extracción peor ataque por IP)"]
         Correlacionador["Motor de Correlación RBVM<br/>(motor_soar.py)"]
-        Calculador["Calculador de Riesgo Dinámico<br/>Rf = (CVSS x Mdin) / 1.2"]
+        Calculador["Calculador de Riesgo Dinámico<br/>Rf = CVSS x Mdin"]
     end
 
     subgraph CAPA_DATOS["4. Capa de Persistencia NoSQL"]
@@ -130,9 +133,8 @@ flowchart TD
 
 ### 3.2. Descripción de Capas Funcionales
 
-1. **Capa de Ingesta y Mocking Estructurado:**
-   * Ingesta extractos JSON con esquemas canónicos de Wazuh (alertas en formato de eventos por línea con `rule.level`), reportes de OpenVAS (con identificadores CVE y puntuación CVSS) y metadatos organizacionales de activos ($C_a$).
-   * Diseñada bajo un esquema de *mocking* para independizar los ensayos experimentales de la variabilidad o latencia de red de entornos de producción.
+1. **Capa de Ingesta y Sensores en Producción:**
+   * Integración síncrona vía API REST con sensores en producción (Wazuh y OpenVAS), recolectando telemetría de eventos en tiempo real e identificadores de vulnerabilidades estructurales, junto con la matriz organizacional de criticidad de activos ($C_a$).
 2. **Capa de Inteligencia de Amenazas (CTI):**
    * Consulta en tiempo real contra el catálogo gubernamental **CISA KEV** mediante petición HTTP directa.
    * Conexión auxiliar y soporte local de feeds **MISP** (desplegable en Docker) para correlacionar vectores de prueba de concepto públicos.
@@ -165,7 +167,8 @@ flowchart TD
 | **Inteligencia CTI** | CISA KEV API | v1 (Feed) | Catálogo oficial de vulnerabilidades explotadas conocidas en la naturaleza |
 | **Plataforma CTI** | MISP Docker | Core Latest| Orquestación de inteligencia de malware y feeds comunitarios |
 | **Virtualización** | Docker Compose | 2.x | Despliegue de servicios auxiliares (MISP, MariaDB, Redis) |
-| **Fuentes de Datos** | Wazuh & OpenVAS | Mocks JSON | Simulación estructurada de telemetría SIEM y escáneres de vulnerabilidades |
+| **Fuentes de Datos** | Wazuh & OpenVAS | API REST | Integración síncrona vía API REST con sensores en producción (Wazuh y OpenVAS) |
+
 
 ---
 
@@ -189,11 +192,7 @@ tesis_soar/
 ├── src/                                                  # Código fuente de la solución
 │   ├── backend/                                          # Motor lógico y microservicios Python
 │   │   ├── api_soar.py                                   # Servidor REST Flask con endpoints de triaje y remediación
-│   │   ├── motor_soar.py                                 # Algoritmo de correlación, cálculo de Mdin y descarga CTI
-│   │   ├── alertas_50_eventos.json                       # [Dataset] Telemetría sintética generada por SIEM Wazuh
-│   │   ├── openvas_real.json                             # [Dataset] Reporte de vulnerabilidades latentes (OpenVAS)
-│   │   ├── inventario.json                               # [Dataset] Matriz de activos organizacionales y factor Ca
-│   │   └── misp_poc_feed.json                            # [Dataset] Feed local de pruebas de concepto (CTI)
+│   │   └── motor_soar.py                                 # Algoritmo de correlación, cálculo de Mdin y conectores
 │   │
 │   └── frontend/                                         # Dashboard de visualización e interacción SOC
 │       ├── package.json                                  # Dependencias de Node.js (React, Lucide, Vite)
@@ -206,8 +205,11 @@ tesis_soar/
 │           └── resultado_mongodb.json                    # Snapshot de referencia de la estructura documental
 │
 ├── .gitignore                                            # Exclusiones de Git (entornos virtuales, caches, logs)
+├── requirements.txt                                      # Dependencias de Python del backend
+├── TODO_Entrega2.md                                      # Hoja de ruta técnica de desarrollo para Entrega 2
 └── README.md                                             # Documentación principal del proyecto de investigación
 ```
+
 
 ---
 
@@ -344,13 +346,13 @@ docker compose up -d
 ### 9.1. Limitaciones Identificadas
 * **Correlación a nivel de Host (IP):** El motor eleva el factor operativo ($E_o$) de todas las vulnerabilidades alojadas en un activo si este recibe un ataque, aunque el evento del SIEM no coincida exactamente con el servicio o puerto del CVE reportado.
 * **Pesos Heurísticos:** Los coeficientes ($0.45, 0.35, 0.20$) fueron determinados heurísticamente con base en la literatura y principios de ciberdefensa, sin someterse aún a un proceso de calibración estadística supervisada con analistas SOC en producción.
-* **Mocking de Ingesta:** La ingesta de datos operacionales se implementó mediante archivos JSON normalizados para asegurar la reproducibilidad académica en laboratorio, en lugar de conectores síncronos hacia APIs en producción.
 * **Alcance Orientado al Triaje:** La plataforma se centró en la fase analítica de priorización contextual y no incluyó playbooks de contención intrusiva activa en red (ej. bloqueo dinámico en firewall).
 
 ### 9.2. Trabajo Futuro
 1. **Granularidad de Mapeo Servicio/Puerto:** Desarrollar correlación enriquecida que enlace el vector de ataque del evento SIEM con el servicio/puerto específico reportado por el escáner de vulnerabilidades.
-2. **Conectores Bidireccionales en Tiempo Real:** Reemplazar el esquema de mocking por integraciones directas vía webhooks y APIs síncronas contra Wazuh Manager y Greenbone Vulnerability Management (GVM).
+2. **Ampliación de Sensores y Automatización Avanzada:** Incorporar mayor variedad de sondas de red y webhooks de eventos contra Wazuh Manager y Greenbone Vulnerability Management (GVM).
 3. **Playbooks de Respuesta Automatizada:** Extender la plataforma hacia un SOAR de ciclo completo mediante playbooks de remediación directa (aislamiento de red de hosts, revocación de credenciales, contención en endpoint).
+
 
 ---
 
