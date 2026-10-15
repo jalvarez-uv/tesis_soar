@@ -1,0 +1,389 @@
+/* Estilos Base del SOC Dashboard */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #0f1115;
+  color: #e2e8f0;
+}
+
+.soc-dashboard {
+  padding: 20px 40px;
+}
+
+.soc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #2d3748;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-title h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #ffffff;
+  letter-spacing: 1px;
+}
+
+.header-stats .stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #1a202c;
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: #10b981;
+  font-weight: 600;
+  border: 1px solid #047857;
+}
+
+.soc-content h2 {
+  font-size: 18px;
+  color: #a0aec0;
+  margin-bottom: 20px;
+}
+
+/* Tabla Estilo SOC */
+.table-container {
+  background: #1a202c;
+  border-radius: 8px;
+  border: 1px solid #2d3748;
+  overflow: hidden;
+}
+
+.soc-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.soc-table th {
+  background: #2d3748;
+  padding: 15px;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: #a0aec0;
+  letter-spacing: 0.5px;
+}
+
+.soc-table td {
+  padding: 15px;
+  border-bottom: 1px solid #2d3748;
+  vertical-align: middle;
+}
+
+.alert-row:hover {
+  background: #232b3b;
+}
+
+.center-col {
+  text-align: center;
+}
+
+/* Flex Elements */
+.cell-flex {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sub-text {
+  font-size: 12px;
+  color: #718096;
+  margin-top: 4px;
+}
+
+/* Badges de Riesgo */
+.risk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 16px;
+}/* Estilos Base del SOC Dashboard */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #0f1115;
+  color: #e2e8f0;
+}
+
+.soc-dashboard {
+  padding: 20px 40px;
+}
+
+.soc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #2d3748;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-title h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #ffffff;
+  letter-spacing: 1px;
+}
+
+.header-stats .stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #1a202c;
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: #10b981;
+  font-weight: 600;
+  border: 1px solid #047857;
+}
+
+.soc-content h2 {
+  font-size: 18px;
+  color: #a0aec0;
+  margin-bottom: 20px;
+}
+
+/* Tabla Estilo SOC */
+.table-container {
+  background: #1a202c;
+  border-radius: 8px;
+  border: 1px solid #2d3748;
+  overflow: hidden;
+}
+
+.soc-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.soc-table th {
+  background: #2d3748;
+  padding: 15px;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: #a0aec0;
+  letter-spacing: 0.5px;
+}
+
+.soc-table td {
+  padding: 15px;
+  border-bottom: 1px solid #2d3748;
+  vertical-align: middle;
+}
+
+.alert-row:hover {
+  background: #232b3b;
+}
+
+.center-col {
+  text-align: center;
+}
+
+/* Flex Elements */
+.cell-flex {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sub-text {
+  font-size: 12px;
+  color: #718096;
+  margin-top: 4px;
+}
+
+/* Badges de Riesgo */
+.risk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.badge-critical { background: rgba(255, 71, 87, 0.15); color: #ff4757; border: 1px solid #ff4757; }
+.badge-high { background: rgba(255, 165, 2, 0.15); color: #ffa502; border: 1px solid #ffa502; }
+.badge-medium { background: rgba(55, 66, 250, 0.15); color: #3742fa; border: 1px solid #3742fa; }
+.badge-low { background: rgba(46, 213, 115, 0.15); color: #2ed573; border: 1px solid #2ed573; }
+
+/* Íconos */
+.icon-blue { color: #3498db; }
+.icon-purple { color: #9b59b6; }
+.icon-red { color: #e74c3c; }
+.icon-gray { color: #7f8c8d; }
+
+/* Otros */
+.cvss-score {
+  background: #4a5568;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.btn-triaje {
+  background: #3182ce;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-triaje:hover {
+  background: #2b6cb0;
+}
+
+.badge-critical { background: rgba(255, 71, 87, 0.15); color: #ff4757; border: 1px solid #ff4757; }
+.badge-high { background: rgba(255, 165, 2, 0.15); color: #ffa502; border: 1px solid #ffa502; }
+.badge-medium { background: rgba(55, 66, 250, 0.15); color: #3742fa; border: 1px solid #3742fa; }
+.badge-low { background: rgba(46, 213, 115, 0.15); color: #2ed573; border: 1px solid #2ed573; }
+
+/* Íconos */
+.icon-blue { color: #3498db; }
+.icon-purple { color: #9b59b6; }
+.icon-red { color: #e74c3c; }
+.icon-gray { color: #7f8c8d; }
+
+/* Otros */
+.cvss-score {
+  background: #4a5568;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.btn-triaje {
+  background: #3182ce;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-triaje:hover {
+  background: #2b6cb0;
+}
+
+/* Menú de Navegación */
+.soc-nav {
+  display: flex;
+  gap: 10px;
+  background: #1a202c;
+  padding: 5px;
+  border-radius: 8px;
+  border: 1px solid #2d3748;
+}
+
+.soc-nav button {
+  background: transparent;
+  border: none;
+  color: #a0aec0;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.soc-nav button:hover {
+  color: #ffffff;
+}
+
+.soc-nav button.nav-active {
+  background: #2d3748;
+  color: #3498db;
+}
+
+/* Botón Ejecutar Motor */
+.btn-ejecutar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ff4757;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.btn-ejecutar:hover:not(:disabled) {
+  background: #ff6b81;
+}
+.btn-ejecutar:disabled {
+  background: #a0aec0;
+  cursor: wait;
+}
+
+/* Badges de Estado */
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+}
+.stat-Detectada { background: rgba(255, 165, 2, 0.2); color: #ffa502; }
+.stat-EnTriaje { background: rgba(52, 152, 219, 0.2); color: #3498db; }
+.stat-Finalizada { background: rgba(46, 213, 115, 0.2); color: #2ed573; }
+
+/* Botones de Acción de Fila */
+.action-cell {
+  display: flex;
+  justify-content: center;
+}
+.btn-avanzar {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+}
+.btn-avanzar:hover { background: #2980b9; }
+
+.btn-eliminar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  color: #e74c3c;
+  border: 1px solid #e74c3c;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.btn-eliminar:hover { background: rgba(231, 76, 60, 0.1); }

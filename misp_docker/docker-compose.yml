@@ -1,0 +1,32 @@
+services:
+  db:
+    image: mariadb:10.4
+    container_name: misp_db
+    restart: always
+    environment:
+      - MYSQL_DATABASE=misp
+      - MYSQL_USER=misp
+      - MYSQL_PASSWORD=misp_password
+      - MYSQL_ROOT_PASSWORD=misp_password
+  redis:
+    image: redis:6.2
+    container_name: misp_redis
+    restart: always
+  misp:
+    image: coolacid/misp-docker:core-latest
+    container_name: misp_core
+    restart: always
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_DATABASE=misp
+      - MYSQL_USER=misp
+      - MYSQL_PASSWORD=misp_password
+      - MISP_ADMIN_EMAIL=admin@admin.test
+      - MISP_ADMIN_PASSPHRASE=admin
+      - MISP_BASEURL=http://localhost:8080
+      - CRON_USER_ID=1
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+      - redis

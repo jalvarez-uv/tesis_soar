@@ -1,0 +1,16 @@
+# Ignorar entornos virtuales de Python
+venv/
+env/
+__pycache__/
+
+# Ignorar módulos de Node.js (React)
+node_modules/
+build/
+
+# Ignorar archivos locales obsoletos o de prueba
+*.json
+!**/package.json
+!**/package-lock.json
+*.log
+.env
+.venv/
